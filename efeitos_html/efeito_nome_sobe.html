@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animação de Nomes com Gradiente (Final)</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #1a1a1a;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #f0f0f0;
+        }
+
+        .title {
+            font-size: 3.5rem; /* 56px */
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Container que segura o nome. Ajuda a evitar "pulos" no layout */
+        .name-wrapper {
+            position: relative;
+            height: 1.2em; /* Altura baseada no tamanho da fonte */
+            width: 8em; /* Largura para acomodar o maior nome */
+            margin-left: 0.25em;
+        }
+
+        .name {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+
+        /* Classe que aplica o gradiente azul ao texto */
+        .gradient-text {
+            background-image: linear-gradient(45deg, #0099ff, #66d9ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Cada letra é um span para ser animada individualmente */
+        .letter {
+            display: inline-block;
+            line-height: 1em;
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+
+    <h1 class="title">
+        Meu nome é
+        <span class="name-wrapper">
+            <span class="name"></span>
+        </span>
+    </h1>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+    <script>
+        const nameContainer = document.querySelector('.name');
+        const names = ['Paulo', 'João', 'Maria'];
+        let nameIndex = 0;
+
+        /**
+         * Prepara as letras de um nome para a animação.
+         * A CORREÇÃO ESTÁ AQUI: Adicionamos a classe 'gradient-text' a cada letra.
+         */
+        function setupLetters(text) {
+            nameContainer.innerHTML = text.replace(/\S/g, "<span class='letter gradient-text'>$&</span>");
+            return nameContainer.querySelectorAll('.letter');
+        }
+
+        // Função principal que executa um ciclo de animação (saída do antigo, entrada do novo)
+        function runAnimationCycle() {
+            const currentLetters = nameContainer.querySelectorAll('.letter');
+
+            // 1. Anima as letras atuais para FORA
+            anime({
+                targets: currentLetters,
+                translateY: [0, -25], // Move para cima
+                opacity: [1, 0],
+                easing: 'easeInExpo',
+                duration: 600,
+                delay: anime.stagger(50, { from: 'last' }),
+                // 2. Quando a animação de saída TERMINA, executa o próximo passo
+                complete: () => {
+                    // Troca para o próximo nome
+                    nameIndex = (nameIndex + 1) % names.length;
+                    
+                    // 3. Prepara as letras do NOVO nome
+                    const newLetters = setupLetters(names[nameIndex]);
+
+                    // 4. Anima as novas letras para DENTRO
+                    anime({
+                        targets: newLetters,
+                        translateY: [25, 0], // Move de baixo para a posição final
+                        opacity: [0, 1],
+                        easing: 'easeOutExpo',
+                        duration: 800,
+                        delay: anime.stagger(100),
+                        // 5. Quando a animação de entrada TERMINA, agenda o próximo ciclo
+                        complete: () => {
+                            setTimeout(runAnimationCycle, 1900); // Espera 1.9s antes de recomeçar
+                        }
+                    });
+                }
+            });
+        }
+
+        // --- Início do Processo ---
+        // Configura as letras do primeiro nome
+        const initialLetters = setupLetters(names[nameIndex]);
+        
+        // Anima a entrada apenas do primeiro nome para dar início
+        anime({
+            targets: initialLetters,
+            translateY: [25, 0],
+            opacity: [0, 1],
+            easing: 'easeOutExpo',
+            duration: 800,
+            delay: anime.stagger(100),
+            complete: () => {
+                // Após o primeiro nome entrar, espera um pouco e inicia o ciclo de troca
+                setTimeout(runAnimationCycle, 1900);
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Botão com Lançamento de Foguetes e Estrelas</title>
+    <style>
+        /* O CSS permanece o mesmo da versão anterior */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #1a1a1a;
+        }
+        .button-container {
+            position: relative;
+        }
+        .launch-button {
+            padding: 15px 30px;
+            font-size: 18px;
+            font-family: sans-serif;
+            color: white;
+            background-color: #395de1;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            outline: none;
+            transition: transform 0.1s ease, box-shadow 0.3s ease;
+        }
+        .launch-button:hover {
+            box-shadow: 0 0 5px #395de1,
+                        0 0 15px #395de1,
+                        0 0 25px #395de1;
+        }
+        .launch-button:active {
+            transform: scale(0.95);
+        }
+        .particle {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            font-size: 20px;
+            pointer-events: none; 
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="button-container">
+        <button class="launch-button">Lançar 🚀</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+    <script>
+        // --- Lógica JavaScript (Combinando Foguetes e Estrelas) ---
+
+        const button = document.querySelector('.launch-button');
+        const container = document.querySelector('.button-container');
+
+        let animationInterval = null;
+
+        // Função principal que cria o "burst" de lançamento
+        function createLaunchBurst() {
+            // Cria um foguete
+            createRocketParticle();
+            
+            // Cria um rastro de 3 a 5 estrelas
+            const starCount = anime.random(3, 5);
+            for (let i = 0; i < starCount; i++) {
+                createStarParticle();
+            }
+        }
+
+        button.addEventListener('mouseenter', () => {
+            // Inicia um timer que chama a função principal a cada 150ms
+            animationInterval = setInterval(createLaunchBurst, 150);
+        });
+
+        button.addEventListener('mouseleave', () => {
+            // Para o timer
+            clearInterval(animationInterval);
+        });
+
+        // Função que cria e anima o FOGUETE
+        function createRocketParticle() {
+            const particle = document.createElement('span');
+            particle.classList.add('particle');
+            particle.innerHTML = '🚀';
+            container.appendChild(particle);
+
+            anime({
+                targets: particle,
+                translateX: anime.random(-25, 25),
+                translateY: anime.random(-250, -150),
+                scale: 1.2, // O foguete é um pouco maior
+                rotate: anime.random(-15, 15),
+                opacity: [1, 0],
+                duration: anime.random(600, 1000),
+                easing: 'easeOutQuad',
+                complete: () => { particle.remove(); }
+            });
+        }
+        
+        // Função que cria e anima a ESTRELA
+        function createStarParticle() {
+            const particle = document.createElement('span');
+            particle.classList.add('particle');
+            particle.innerHTML = '✨';
+            container.appendChild(particle);
+            
+            // A animação da estrela é um pouco diferente para criar o efeito de rastro
+            anime({
+                targets: particle,
+                translateX: anime.random(-60, 60), // Se espalham mais
+                translateY: anime.random(-120, -50), // Não voam tão alto
+                scale: anime.random(0.5, 1), // São menores
+                opacity: [1, 0],
+                duration: anime.random(400, 700), // Duram menos tempo na tela
+                easing: 'easeOutExpo',
+                complete: () => { particle.remove(); }
+            });
+        }
+    </script>
+
+</body>
+</html>
