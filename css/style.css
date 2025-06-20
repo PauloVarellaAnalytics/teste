@@ -1869,7 +1869,7 @@
 
    @media (min-width:200px) and (max-width:576px) {
       .hero-1-title {
-         font-size: 30px !important;
+         font-size: 15px !important;
       }
    }
 
@@ -2520,6 +2520,16 @@
         /* ... outras propriedades ... */
     }
 
+       .hero-1-bg .hero-1-title {
+      font-size: 10px;
+      color: #FFFFFF !important;
+   }
+
+      .display-4 {
+      font-size: 24px !important;
+      line-height: 1.2
+   }
+
 
 }
 
@@ -2547,5 +2557,10 @@
         background-position: center center;
         /* ... outras propriedades ... */
     }
+
+      .display-4 {
+      font-size: 24px !important;
+      line-height: 1.2
+   }
     
 }
