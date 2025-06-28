@@ -131,4 +131,16 @@ jQuery(window).on('resize', function () {
     }, 200);
 });
 
+
+jQuery(document).ready(function($) {
+    // Código existente do Swiper...
+
+    // Lógica para o menu móvel
+    $('#menu_mobile_icon').on('click', function() {
+        $('body').toggleClass('menu_mobile_ativo');
+        // Alterna a visibilidade dos ícones de menu e "X"
+        $(this).find('span').toggle();
+    });
+});
+
 });
